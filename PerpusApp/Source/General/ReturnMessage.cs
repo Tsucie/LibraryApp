@@ -7,12 +7,12 @@ namespace PerpusApp.Source.General
         /// <summary>
         /// Error Code
         /// </summary>
-        public int Code = 0;
+        public int Code { get; set; }
 
         /// <summary>
         /// Error Message
         /// </summary>
-        public string Message = string.Empty;
+        public string Message { get; set; }
 
         /// <summary>
         /// Menentukan apakah Error dari system atau bukan

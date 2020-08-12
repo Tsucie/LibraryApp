@@ -64,13 +64,13 @@ namespace PerpusApp.Source.Controller
                 response.Code = 1;
                 response.Message = "Kategori staff berhasil ditambahkan!";
 
-                return Ok(new {resmsg = response});
+                return Ok(response);
             }
             catch (Exception ex)
             {
                 response.Error(ex);
 
-                return Ok(new {resmsg = response});
+                return Ok(response);
             }
         }
 
