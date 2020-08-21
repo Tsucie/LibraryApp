@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
@@ -23,12 +24,9 @@ namespace PerpusApp.Source.Controller
                 List<UserSite> siteList = await Task.Run(() => SiteCRUD.ReadAll(Startup.db_perpus_ConnStr));
                 return Ok(siteList);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // return BadRequest();
-                response.Error(ex);
-
-                return Ok(response);
+                return BadRequest();
             }
         }
 
@@ -104,8 +102,7 @@ namespace PerpusApp.Source.Controller
                 else
                 {
                     response.Code = -1;
-                    // response.Message = HttpStatusCode.InternalServerError.ToString();
-                    response.Message = ex.Message;
+                    response.Message = HttpStatusCode.InternalServerError.ToString();
                 }
 
                 return Ok(response);
@@ -163,8 +160,7 @@ namespace PerpusApp.Source.Controller
                 else
                 {
                     response.Code = -1;
-                    // response.Message = HttpStatusCode.InternalServerError.ToString();
-                    response.Message = ex.Message;
+                    response.Message = HttpStatusCode.InternalServerError.ToString();
                 }
 
                 return Ok(response);

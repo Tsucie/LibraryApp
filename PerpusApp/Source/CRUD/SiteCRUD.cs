@@ -1,6 +1,5 @@
 using System;
 using System.Data;
-using System.IO;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using PerpusApp.Source.Models;
@@ -17,7 +16,7 @@ namespace PerpusApp.Source.CRUD
             string sqlStr =
                 "SELECT * FROM `db_perpus`.`site` "+
                 "INNER JOIN `db_perpus`.`users` ON users.u_id = site.s_u_id "+
-                "INNER JOIN `db_perpus`.`user_photo` ON user_photo.up_u_id = users.u_id "+
+                "LEFT JOIN `db_perpus`.`user_photo` ON user_photo.up_u_id = users.u_id "+
                 "WHERE (`s_rec_status` = '1');";
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             DataTable dt = new DataTable();
@@ -43,24 +42,6 @@ namespace PerpusApp.Source.CRUD
                     siteList.Add(s);
                 }
             }
-            // using MySqlDataReader _data = _cmd.ExecuteReader();
-            // while (_data.Read())
-            // {
-            //     UserSite ust = new UserSite();
-            //     if(!_data.IsDBNull("up_id"))
-            //     {
-            //         ust.up_photo = (byte[])_data.GetValue("up_photo");
-            //         ust.up_filename = _data.GetString("up_filename");
-            //     }
-            //     ust.s_id = _data.GetInt32("s_id");
-            //     ust.s_u_id = _data.GetInt32("s_u_id");
-            //     ust.s_fullname = _data.GetString("s_fullname");
-            //     ust.s_email = _data.GetString("s_email");
-            //     ust.s_contact = _data.GetString("s_contact");
-            //     ust.s_address = _data.GetString("s_address");
-            //     ust.s_status = _data.GetInt16("s_status");
-            //     siteList.Add(ust);
-            // }
             _conn.Close();
             return siteList;
         }
@@ -73,7 +54,7 @@ namespace PerpusApp.Source.CRUD
 
             string sqlStr = "SELECT * FROM db_perpus.site "+
                             "INNER JOIN db_perpus.users ON users.u_id = site.s_u_id "+
-                            "INNER JOIN db_perpus.user_photo ON user_photo.up_u_id = users.u_id "+
+                            "LEFT JOIN db_perpus.user_photo ON user_photo.up_u_id = users.u_id "+
                             "WHERE (s_u_id = '"+s_u_id+"') AND (s_rec_status = '1' AND u_rec_status = '1');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
