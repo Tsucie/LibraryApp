@@ -38,9 +38,6 @@ namespace PerpusApp.Source.Controller
                 StaffCategory sc = StaffCategoryCRUD.Read(Startup.db_perpus_ConnStr, sc_id);
                 if(sc.Equals(null)) throw new Exception("", new Exception("Error Get data from Database!"));
 
-                response.Code = 1;
-                response.Message = string.Empty;
-
                 return Ok(sc);
             }
             catch (Exception ex)

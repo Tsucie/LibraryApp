@@ -34,12 +34,5 @@ namespace PerpusApp.Source.Models
         public int uc_id { get; set; }
         public string uc_name { get; set; }
         public string uc_desc { get; set; }
-
-        //user_photo
-        public int up_id { get; set; }
-        public int up_u_id { get; set; }
-        public byte[] up_photo { get; set; }
-        public string up_filename { get; set; }
-        public short up_rec_status { get; set; }
     }
 }

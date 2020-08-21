@@ -12,7 +12,7 @@ namespace PerpusApp.Source.CRUD
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
-            string sqlStr = "SELECT u_id, u_uc_id, u_username, u_password FROM db_perpus.users WHERE (`u_rec_status` = '1' AND `u_username` = '"+u_username+"');";
+            string sqlStr = "SELECT u_id, u_uc_id, u_username, u_password FROM db_perpus.users WHERE (`u_rec_status` = '1' AND `u_username` = '@"+u_username+"');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             using MySqlDataReader _data = _cmd.ExecuteReader();
@@ -26,6 +26,23 @@ namespace PerpusApp.Source.CRUD
             }
             _conn.Close();
             return u;
+        }
+
+        public static int ReadRowData(string connStr, string u_username)
+        {
+            int rowReturned = 0;
+            using var _conn = new MySqlConnection(connStr);
+            _conn.Open();
+
+            string sqlStr = "SELECT u_username FROM db_perpus.users WHERE(u_username = '@"+u_username+"');";
+            
+            using var _cmd = new MySqlCommand(sqlStr, _conn);
+            using MySqlDataReader _data = _cmd.ExecuteReader();
+
+            if(_data.HasRows) rowReturned = 1;
+
+            _conn.Close();
+            return rowReturned;
         }
 
         public static int Create(string connStr, Users u)
@@ -61,7 +78,45 @@ namespace PerpusApp.Source.CRUD
             return affectedRow;
         }
 
-        //CreatePhotoAlive?
+        public static int CreatePhotoAlive(MySqlConnection _conn, UserPhoto up)
+        {
+            int affectedRow = 0;
+            string sqlStr = "INSERT INTO `db_perpus`.`user_photo` (`up_id`,`up_u_id`,`up_photo`,`up_filename`,`up_rec_status`) "+
+            "VALUES ('"+up.up_id+"','"+up.up_u_id+"','"+up.up_photo+"','"+up.up_filename+"','"+up.up_rec_status+"');";
+
+            using var _cmd = new MySqlCommand(sqlStr);
+            _cmd.Connection = _conn;
+
+            if(_conn.State == ConnectionState.Closed) _conn.Open();
+            affectedRow = _cmd.ExecuteNonQuery();
+
+            if(affectedRow == 1) affectedRow = UpdatePhotoAlive(_conn, (int)up.up_u_id, up);
+            return affectedRow;
+        }
+
+        public static int UpdatePhotoAlive(MySqlConnection _conn, int u_id, UserPhoto up)
+        {
+            int affectedRow = 0;
+            string sqlStr = "UPDATE `db_perpus`.`user_photo` SET `up_photo` = '"+up.up_photo+"', `up_filename` = '"+up.up_filename+"' WHERE up_u_id = '"+u_id+"'";
+
+            using var _cmd = new MySqlCommand();
+            _cmd.Connection = _conn;
+
+            if(_conn.State == ConnectionState.Closed) _conn.Open();
+            _cmd.CommandText = sqlStr;
+            affectedRow = _cmd.ExecuteNonQuery();
+
+            if(affectedRow == 1)
+            {
+                sqlStr = "UPDATE `db_perpus`.`user_photo` SET `up_photo` = @photo"+
+                            " WHERE up_u_id = "+ u_id.ToString();
+                _cmd.Parameters.Add("@photo", MySqlDbType.Blob, up.up_photo.Length).Value = up.up_photo;
+                _cmd.CommandText = sqlStr;
+                affectedRow = _cmd.ExecuteNonQuery();
+                _cmd.Parameters.Clear();
+            }
+            return affectedRow;
+        }
 
         public static int Update(string connStr, int u_id, Users u)
         {
@@ -72,7 +127,7 @@ namespace PerpusApp.Source.CRUD
             string sqlPass = "";
             if(!u.u_password.Equals(null)) sqlPass = ", `u_password` = '"+u.u_password+"'";
             
-            string sqlStr = "UPDATE `db_perpus`.`users` SET `u_username` = '"+u.u_username+"'"+sqlPass+", `u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' WHERE (`u_id` = '"+u_id+"');";
+            string sqlStr = "UPDATE `db_perpus`.`users` SET `u_username` = '@"+u.u_username+"'"+sqlPass+", `u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' WHERE (`u_id` = '"+u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             affectedRow = _cmd.ExecuteNonQuery();
@@ -88,7 +143,7 @@ namespace PerpusApp.Source.CRUD
             string sqlPass = "";
             if(!u.u_password.Equals(null)) sqlPass = ", `u_password` = '"+u.u_password+"'";
             
-            string sqlStr = "UPDATE `db_perpus`.`users` SET `u_username` = '"+u.u_username+"'"+sqlPass+", `u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' WHERE (`u_id` = '"+u_id+"');";
+            string sqlStr = "UPDATE `db_perpus`.`users` SET `u_username` = '@"+u.u_username+"'"+sqlPass+", `u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' WHERE (`u_id` = '"+u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr);
             _cmd.Connection = _conn;
@@ -98,8 +153,6 @@ namespace PerpusApp.Source.CRUD
 
             return affectedRow;
         }
-
-        //UpdatePhotoAlive?
 
         public static int Delete(string connStr, int u_id)
         {
@@ -129,7 +182,5 @@ namespace PerpusApp.Source.CRUD
 
             return affectedRow;
         }
-
-        //DeletePhotoAlive?
     }
 }

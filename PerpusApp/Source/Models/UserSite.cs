@@ -38,5 +38,10 @@ namespace PerpusApp.Source.Models
         public int u_uc_id { get; set; }
         public string u_username { get; set; }
         public string u_password { get; set; }
+        public string new_password { get; set; }
+
+        // user_photo
+        public string up_filename { get; set; }
+        public byte[] up_photo { get; set; }
     }
 }

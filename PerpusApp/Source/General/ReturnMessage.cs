@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 
 namespace PerpusApp.Source.General
 {
@@ -23,7 +24,8 @@ namespace PerpusApp.Source.General
             if (ex.InnerException == null)
             {
                 Code = -1;
-                Message = System.Net.HttpStatusCode.InternalServerError.ToString();
+                // Message = HttpStatusCode.InternalServerError.ToString();
+                Message = ex.Message;
             }
             else
             {
