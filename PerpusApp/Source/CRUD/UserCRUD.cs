@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 using PerpusApp.Source.Models;
@@ -78,6 +79,23 @@ namespace PerpusApp.Source.CRUD
             return affectedRow;
         }
 
+        public static int ReadPhoto(string connStr, int up_u_id)
+        {
+            int rowReturned = 0;
+            using var _conn = new MySqlConnection(connStr);
+            _conn.Open();
+
+            string sqlStr = "SELECT * FROM db_perpus.user_photo WHERE up_u_id = '"+up_u_id+"'";
+
+            using var _cmd = new MySqlCommand(sqlStr, _conn);
+            using MySqlDataReader _data = _cmd.ExecuteReader();
+
+            if(_data.HasRows) rowReturned = 1;
+
+            _conn.Close();
+            return rowReturned;
+        }
+
         public static int CreatePhotoAlive(MySqlConnection _conn, UserPhoto up)
         {
             int affectedRow = 0;
@@ -118,6 +136,55 @@ namespace PerpusApp.Source.CRUD
             return affectedRow;
         }
 
+        public static bool CreatePhoto(string connStr, UserPhoto up, int u_id)
+        {
+            bool result = false;
+            MySqlConnection _conn = null;
+            MySqlCommand _cmd = null;
+            MySqlTransaction sqlTrans = null;
+            Random rand = null;
+            try
+            {
+                rand = new Random();
+                _cmd = new MySqlCommand();
+                _conn = new MySqlConnection(connStr);
+                _conn.Open();
+                sqlTrans = _conn.BeginTransaction();
+                _cmd.Transaction = sqlTrans;
+
+                int affectedRow = 0;
+                up.up_id = rand.Next(int.MinValue, int.MaxValue);
+                up.up_u_id = u_id;
+                affectedRow += CreatePhotoAlive(_conn, up);
+
+                if(affectedRow != 1) throw new Exception();
+                
+                sqlTrans.Commit();
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                sqlTrans.Rollback();
+                throw ex;
+            }
+            finally
+            {
+                if(sqlTrans != null)
+                {
+                    sqlTrans.Dispose();
+                    sqlTrans = null;
+                }
+
+                if(_conn != null)
+                {
+                    _conn.Close();
+                    _conn = null;
+                    _cmd = null;
+                }
+            }
+            return result;
+        }
+
         public static int Update(string connStr, int u_id, Users u)
         {
             int affectedRow = 0;
@@ -125,7 +192,7 @@ namespace PerpusApp.Source.CRUD
             _conn.Open();
 
             string sqlPass = "";
-            if(!u.u_password.Equals(null)) sqlPass = ", `u_password` = '"+u.u_password+"'";
+            if(u.u_password != null) sqlPass = ", `u_password` = '"+u.u_password+"'";
             
             string sqlStr = "UPDATE `db_perpus`.`users` SET `u_username` = '@"+u.u_username+"'"+sqlPass+", `u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' WHERE (`u_id` = '"+u_id+"');";
 
@@ -141,9 +208,11 @@ namespace PerpusApp.Source.CRUD
             int affectedRow = 0;
 
             string sqlPass = "";
-            if(!u.u_password.Equals(null)) sqlPass = ", `u_password` = '"+u.u_password+"'";
+            if(u.u_password != null) sqlPass = ", `u_password` = '"+u.u_password+"'";
             
-            string sqlStr = "UPDATE `db_perpus`.`users` SET `u_username` = '@"+u.u_username+"'"+sqlPass+", `u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' WHERE (`u_id` = '"+u_id+"');";
+            string sqlStr =
+                "UPDATE `db_perpus`.`users` "+
+                "SET `u_username` = '@"+u.u_username+"'"+sqlPass+", `u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' WHERE (`u_id` = '"+u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr);
             _cmd.Connection = _conn;

@@ -45,5 +45,9 @@ namespace PerpusApp.Source.Models
         public int sc_id { get; set; }
         public string sc_name { get; set; }
         public string sc_desc { get; set; }
+
+        //up_photo
+        public string up_filename { get; set; }
+        public byte[] up_photo { get; set; }
     }
 }

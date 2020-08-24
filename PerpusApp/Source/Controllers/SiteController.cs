@@ -18,7 +18,6 @@ namespace PerpusApp.Source.Controller
         [HttpGet("GetList")]
         public async Task<IActionResult> ReadAll()
         {
-            ReturnMessage response = new ReturnMessage();
             try
             {
                 List<UserSite> siteList = await Task.Run(() => SiteCRUD.ReadAll(Startup.db_perpus_ConnStr));
@@ -136,12 +135,22 @@ namespace PerpusApp.Source.Controller
                 Users u = new Users();
                 u.u_id = s.s_u_id;
                 u.u_username = s.u_username;
-                u.u_password = (s.u_password == null) ? null : Crypto.Hash(s.u_password, UserEnum.Site_user.GetHashCode());
+                // if(!string.IsNullOrEmpty(s.u_password)) u.u_password = Crypto.Hash(s.u_password, UserEnum.Site_user.GetHashCode());
+                u.u_password = (string.IsNullOrEmpty(s.u_password)) ? null : Crypto.Hash(s.u_password, UserEnum.Site_user.GetHashCode());
                 u.u_rec_updatedby = "Root";
                 u.u_rec_updated = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
                 UserPhoto up = null;
-                if(u_file != null) up = ImageProsessor.ConvertToThumb(u_file, "Site", s.u_username);
+                if(u_file != null)
+                {
+                    up = ImageProsessor.ConvertToThumb(u_file, "Site", s.u_username);
+                    if(UserCRUD.ReadPhoto(Startup.db_perpus_ConnStr, (int)u.u_id) != 1)
+                    {
+                        up.up_rec_status = 1;
+                        if(!UserCRUD.CreatePhoto(Startup.db_perpus_ConnStr, up, (int)u.u_id)) throw new Exception("", new Exception("Failed add photo to database!"));
+                        up = null;
+                    }
+                }
 
                 if(!SiteCRUD.UpdateSiteAndUser(Startup.db_perpus_ConnStr, s, u, up)) throw new Exception("", new Exception("Data is not updated in database!"));
 

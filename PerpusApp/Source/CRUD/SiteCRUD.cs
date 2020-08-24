@@ -52,10 +52,11 @@ namespace PerpusApp.Source.CRUD
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
-            string sqlStr = "SELECT * FROM db_perpus.site "+
-                            "INNER JOIN db_perpus.users ON users.u_id = site.s_u_id "+
-                            "LEFT JOIN db_perpus.user_photo ON user_photo.up_u_id = users.u_id "+
-                            "WHERE (s_u_id = '"+s_u_id+"') AND (s_rec_status = '1' AND u_rec_status = '1');";
+            string sqlStr =
+                "SELECT * FROM db_perpus.site "+
+                "INNER JOIN db_perpus.users ON users.u_id = site.s_u_id "+
+                "LEFT JOIN db_perpus.user_photo ON user_photo.up_u_id = users.u_id "+
+                "WHERE (s_u_id = '"+s_u_id+"') AND (s_rec_status = '1' AND u_rec_status = '1');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             using MySqlDataReader _data = _cmd.ExecuteReader();
