@@ -136,9 +136,33 @@ CREATE TABLE IF NOT EXISTS `db_perpus`.`book_category` (
 )
 ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS `db_perpus`.`member` (
+	`m_id` INT NOT NULL,
+	`m_u_id` INT NOT NULL,
+	`m_class` VARCHAR(45) NOT NULL,
+	`m_fullname` VARCHAR(80) NOT NULL,
+	`m_email` VARCHAR(45) NOT NULL,
+	`m_contact` VARCHAR(20) NOT NULL,
+	`m_address` VARCHAR(150) NOT NULL,
+	`m_status` SMALLINT NOT NULL,
+	`m_rec_status` SMALLINT NOT NULL,
+	`m_rec_createdby` VARCHAR(45) NOT NULL,
+	`m_rec_created` DATETIME NOT NULL,
+	`m_rec_updatedby` VARCHAR(45) DEFAULT NULL,
+	`m_rec_updated` DATETIME NULL,
+	`m_rec_deletedby` VARCHAR(45) DEFAULT NULL,
+	`m_rec_deleted` DATETIME NULL,
+	PRIMARY KEY (`m_id`),
+	UNIQUE KEY `m_id_UNIQUE` (`m_id`),
+	CONSTRAINT `fk_users_member` FOREIGN KEY (`m_u_id`)
+	REFERENCES `db_perpus`.`users` (`u_id`)
+)
+ENGINE = InnoDB;
+
 CREATE TABLE IF NOT EXISTS `db_perpus`.`books` (
 	`bks_id` INT NOT NULL,
 	`bks_bc_id` INT NOT NULL,
+	`bks_m_id` INT DEFAULT NULL,
 	`bks_code` VARCHAR(12) NOT NULL,
 	`bks_name` VARCHAR(75) NOT NULL,
 	`bks_writer` VARCHAR(45) NOT NULL,
@@ -156,33 +180,9 @@ CREATE TABLE IF NOT EXISTS `db_perpus`.`books` (
 	PRIMARY KEY (`bks_id`,`bks_bc_id`),
 	UNIQUE KEY `bks_id_UNIQUE` (`bks_id`),
 	CONSTRAINT `fk_bookCategory_books` FOREIGN KEY (`bks_bc_id`)
-	REFERENCES `db_perpus`.`book_category` (`bc_id`)
-)
-ENGINE = InnoDB;
-
-CREATE TABLE IF NOT EXISTS `db_perpus`.`member` (
-	`m_id` INT NOT NULL,
-	`m_u_id` INT NOT NULL,
-	`m_bks_id` INT DEFAULT NULL,
-	`m_class` VARCHAR(45) NOT NULL,
-	`m_fullname` VARCHAR(80) NOT NULL,
-	`m_email` VARCHAR(45) NOT NULL,
-	`m_contact` VARCHAR(20) NOT NULL,
-	`m_address` VARCHAR(150) NOT NULL,
-	`m_status` SMALLINT NOT NULL,
-	`m_rec_status` SMALLINT NOT NULL,
-	`m_rec_createdby` VARCHAR(45) NOT NULL,
-	`m_rec_created` DATETIME NOT NULL,
-	`m_rec_updatedby` VARCHAR(45) DEFAULT NULL,
-	`m_rec_updated` DATETIME NULL,
-	`m_rec_deletedby` VARCHAR(45) DEFAULT NULL,
-	`m_rec_deleted` DATETIME NULL,
-	PRIMARY KEY (`m_id`),
-	UNIQUE KEY `m_id_UNIQUE` (`m_id`),
-	CONSTRAINT `fk_users_member` FOREIGN KEY (`m_u_id`)
-	REFERENCES `db_perpus`.`users` (`u_id`),
-	CONSTRAINT `fk_books_member` FOREIGN KEY (`m_bks_id`)
-	REFERENCES `db_perpus`.`books` (`bks_id`)
+	REFERENCES `db_perpus`.`book_category` (`bc_id`),
+	CONSTRAINT `fk_member_books` FOREIGN KEY (`bks_m_id`)
+	REFERENCES `db_perpus`.`member` (`m_id`)
 )
 ENGINE = InnoDB;
 

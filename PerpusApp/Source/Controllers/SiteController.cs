@@ -135,7 +135,6 @@ namespace PerpusApp.Source.Controller
                 Users u = new Users();
                 u.u_id = s.s_u_id;
                 u.u_username = s.u_username;
-                // if(!string.IsNullOrEmpty(s.u_password)) u.u_password = Crypto.Hash(s.u_password, UserEnum.Site_user.GetHashCode());
                 u.u_password = (string.IsNullOrEmpty(s.u_password)) ? null : Crypto.Hash(s.u_password, UserEnum.Site_user.GetHashCode());
                 u.u_rec_updatedby = "Root";
                 u.u_rec_updated = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");

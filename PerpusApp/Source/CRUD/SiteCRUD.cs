@@ -13,11 +13,13 @@ namespace PerpusApp.Source.CRUD
             List<UserSite> siteList = new List<UserSite>();
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
+
             string sqlStr =
                 "SELECT * FROM `db_perpus`.`site` "+
                 "INNER JOIN `db_perpus`.`users` ON users.u_id = site.s_u_id "+
                 "LEFT JOIN `db_perpus`.`user_photo` ON user_photo.up_u_id = users.u_id "+
                 "WHERE (`s_rec_status` = '1');";
+
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             DataTable dt = new DataTable();
             MySqlDataAdapter dataAdapter = new MySqlDataAdapter(_cmd);
@@ -75,7 +77,6 @@ namespace PerpusApp.Source.CRUD
                 ust.u_id = _data.GetInt32("u_id");
                 ust.u_uc_id = _data.GetInt32("u_uc_id");
                 ust.u_username = _data.GetString("u_username").Substring(1);
-                // ust.u_password = _data.GetString("u_password");
             }
             _conn.Close();
             return ust;
@@ -87,9 +88,15 @@ namespace PerpusApp.Source.CRUD
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
-            string sqlStr = "INSERT INTO `db_perpus`.`site` "+
-            "(`s_id`,`s_u_id`,`s_fullname`,`s_email`,`s_contact`,`s_address`,`s_status`,`s_rec_status`,`s_rec_createdby`,`s_rec_created`) "+
-            "VALUES ('"+s.s_id+"','"+s.s_u_id+"','"+s.s_fullname+"','"+s.s_email+"','"+s.s_contact+"','"+s.s_address+"','"+s.s_status+"','"+s.s_rec_status+"','"+s.s_rec_createdby+"','"+s.s_rec_created+"');";
+            string sqlStr =
+                "INSERT INTO `db_perpus`.`site` "+
+                "(`s_id`,`s_u_id`,"+
+                "`s_fullname`,`s_email`,`s_contact`,`s_address`,`s_status`,`s_rec_status`,"+
+                "`s_rec_createdby`,`s_rec_created`) "+
+                "VALUES ('"+
+                s.s_id+"','"+s.s_u_id+"','"+
+                s.s_fullname+"','"+s.s_email+"','"+s.s_contact+"','"+s.s_address+"','"+s.s_status+"','"+
+                s.s_rec_status+"','"+s.s_rec_createdby+"','"+s.s_rec_created+"');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             affectedRow = _cmd.ExecuteNonQuery();
@@ -102,9 +109,15 @@ namespace PerpusApp.Source.CRUD
         {
             int affectedRow = 0;
 
-            string sqlStr = "INSERT INTO `db_perpus`.`site` "+
-            "(`s_id`,`s_u_id`,`s_fullname`,`s_email`,`s_contact`,`s_address`,`s_status`,`s_rec_status`,`s_rec_createdby`,`s_rec_created`) "+
-            "VALUES ('"+s.s_id+"','"+s.s_u_id+"','"+s.s_fullname+"','"+s.s_email+"','"+s.s_contact+"','"+s.s_address+"','"+s.s_status+"','"+s.s_rec_status+"','"+s.s_rec_createdby+"','"+s.s_rec_created+"');";
+            string sqlStr =
+                "INSERT INTO `db_perpus`.`site` "+
+                "(`s_id`,`s_u_id`,"+
+                "`s_fullname`,`s_email`,`s_contact`,`s_address`,`s_status`,"+
+                "`s_rec_status`,`s_rec_createdby`,`s_rec_created`) "+
+                "VALUES ('"+
+                s.s_id+"','"+s.s_u_id+"','"+
+                s.s_fullname+"','"+s.s_email+"','"+s.s_contact+"','"+s.s_address+"','"+s.s_status+"','"+
+                s.s_rec_status+"','"+s.s_rec_createdby+"','"+s.s_rec_created+"');";
 
             using var _cmd = new MySqlCommand(sqlStr);
             _cmd.Connection = _conn;
@@ -177,7 +190,17 @@ namespace PerpusApp.Source.CRUD
             int affectedRow = 0;
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
-            string sqlStr = "UPDATE `db_perpus`.`site` SET `s_fullname` = '"+s.s_fullname+"', `s_email` = '"+s.s_email+"', `s_contact` = '"+s.s_contact+"', `s_address` = '"+s.s_address+"', `s_status` = '"+s.s_status+"', `s_rec_updatedby` = '"+s.s_rec_updatedby+"', `s_rec_updated` = '"+s.s_rec_updated+"' WHERE (`s_u_id` = '"+s_u_id+"');";
+
+            string sqlStr =
+                "UPDATE `db_perpus`.`site` SET "+
+                "`s_fullname` = '"+s.s_fullname+"', "+
+                "`s_email` = '"+s.s_email+"', "+
+                "`s_contact` = '"+s.s_contact+"', "+
+                "`s_address` = '"+s.s_address+"', "+
+                "`s_status` = '"+s.s_status+"', "+
+                "`s_rec_updatedby` = '"+s.s_rec_updatedby+"', "+
+                "`s_rec_updated` = '"+s.s_rec_updated+"' "+
+                "WHERE (`s_u_id` = '"+s_u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             affectedRow = _cmd.ExecuteNonQuery();
@@ -189,7 +212,17 @@ namespace PerpusApp.Source.CRUD
         public static int UpdateAlive(MySqlConnection _conn, int s_u_id, UserSite s)
         {
             int affectedRow = 0;
-            string sqlStr = "UPDATE `db_perpus`.`site` SET `s_fullname` = '"+s.s_fullname+"', `s_email` = '"+s.s_email+"', `s_contact` = '"+s.s_contact+"', `s_address` = '"+s.s_address+"', `s_status` = '"+s.s_status+"', `s_rec_updatedby` = '"+s.s_rec_updatedby+"', `s_rec_updated` = '"+s.s_rec_updated+"' WHERE (`s_u_id` = '"+s_u_id+"');";
+            
+            string sqlStr =
+                "UPDATE `db_perpus`.`site` SET "+
+                "`s_fullname` = '"+s.s_fullname+"', "+
+                "`s_email` = '"+s.s_email+"', "+
+                "`s_contact` = '"+s.s_contact+"', "+
+                "`s_address` = '"+s.s_address+"', "+
+                "`s_status` = '"+s.s_status+"', "+
+                "`s_rec_updatedby` = '"+s.s_rec_updatedby+"', "+
+                "`s_rec_updated` = '"+s.s_rec_updated+"' "+
+                "WHERE (`s_u_id` = '"+s_u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr);
             _cmd.Connection = _conn;

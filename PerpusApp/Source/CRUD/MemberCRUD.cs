@@ -6,24 +6,23 @@ using PerpusApp.Source.Models;
 
 namespace PerpusApp.Source.CRUD
 {
-    public sealed class StaffCRUD
+    public sealed class MemberCRUD
     {
-        public static List<UserStaff> ReadAll(string connStr)
+        public static List<UserMember> ReadAll(string connStr)
         {
-            List<UserStaff> stf = new List<UserStaff>();
+            List<UserMember> members = new List<UserMember>();
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
-            string sqlStr =
-                "SELECT * FROM `db_perpus`.`staff` "+
-                "INNER JOIN db_perpus.staff_category ON staff.stf_sc_id = staff_category.sc_id "+
-                "INNER JOIN db_perpus.users ON staff.stf_u_id = users.u_id "+
+            string sqlStr = 
+                "SELECT * FROM `db_perpus`.`member` "+
+                "INNER JOIN db_perpus.users ON `member`.m_u_id = users.u_id "+
                 "LEFT JOIN db_perpus.user_photo ON users.u_id = user_photo.up_u_id "+
-                "WHERE (`stf_rec_status` = '1');";
-
+                "WHERE (m_rec_status = '1');";
+            
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             DataTable dt = new DataTable();
-
+            
             MySqlDataAdapter dataAdapter = new MySqlDataAdapter(_cmd);
             dataAdapter.Fill(dt);
 
@@ -31,79 +30,75 @@ namespace PerpusApp.Source.CRUD
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    UserStaff s = new UserStaff();
-                    if(dr["up_id"] != DBNull.Value)
+                    UserMember m = new UserMember();
+                    if(dr["up_id"] !=  DBNull.Value)
                     {
-                        s.up_photo = (byte[])dr["up_photo"];
-                        s.up_filename = (string)dr["up_filename"];
+                        m.up_photo = (byte[])dr["up_photo"];
+                        m.up_filename = (string)dr["up_filename"];
                     }
-                    s.stf_id = (int)dr["stf_id"];
-                    s.stf_u_id = (int)dr["stf_u_id"];
-                    s.sc_name = (string)dr["sc_name"];
-                    s.stf_fullname = (string)dr["stf_fullname"];
-                    s.stf_email = (string)dr["stf_email"];
-                    s.stf_contact = (string)dr["stf_contact"];
-                    s.stf_address = (string)dr["stf_address"];
-                    s.stf_shift = dr["stf_shift"].ToString();
-                    s.stf_status = (short)dr["stf_status"];
-                    stf.Add(s);
+                    m.m_id = (int)dr["m_id"];
+                    m.m_u_id = (int)dr["m_u_id"];
+                    m.m_class = (string)dr["m_class"];
+                    m.m_fullname = (string)dr["m_fullname"];
+                    m.m_email = (string)dr["m_email"];
+                    m.m_contact = (string)dr["m_contact"];
+                    m.m_address = (string)dr["m_address"];
+                    m.m_status = (short)dr["m_status"];
+                    members.Add(m);
                 }
             }
             _conn.Close();
-            return stf;
+            return members;
         }
 
-        public static UserStaff Read(string connStr, int stf_u_id)
+        public static UserMember Read(string connStr, int m_u_id)
         {
-            UserStaff stf = null;
+            UserMember m = null;
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
-            string sqlStr =
-                "SELECT * FROM db_perpus.staff "+
-                "INNER JOIN db_perpus.users ON staff.stf_u_id = users.u_id "+
+            string sqlStr = 
+                "SELECT * FROM `db_perpus`.`member` "+
+                "INNER JOIN db_perpus.users ON `member`.m_u_id = users.u_id "+
                 "LEFT JOIN db_perpus.user_photo ON users.u_id = user_photo.up_u_id "+
-                "WHERE (stf_u_id = '"+stf_u_id+"') AND (stf_rec_status = '1' AND u_rec_status = '1');";
+                "WHERE (m_u_id = '"+m_u_id+"') AND (m_rec_status = '1' AND u_rec_status = '1');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             using MySqlDataReader _data = _cmd.ExecuteReader();
-            if(_data.Read())
+            if (_data.Read())
             {
-                stf = new UserStaff();
-                stf.stf_id = _data.GetInt32("stf_id");
-                stf.stf_u_id = _data.GetInt32("stf_u_id");
-                stf.stf_sc_id = _data.GetInt32("stf_sc_id");
-                stf.up_filename = _data.IsDBNull("up_filename") ? null : _data.GetString("up_filename");
-                stf.up_photo = _data.IsDBNull("up_photo") ? null : (byte[])_data.GetValue("up_photo");
-                stf.stf_fullname = _data.GetString("stf_fullname");
-                stf.stf_email = _data.GetString("stf_email");
-                stf.stf_contact = _data.GetString("stf_contact");
-                stf.stf_address = _data.GetString("stf_address");
-                stf.stf_shift = _data.GetValue("stf_shift").ToString();
-                stf.stf_status = _data.GetInt16("stf_status");
-                stf.u_id = _data.GetInt32("u_id");
-                stf.u_uc_id = _data.GetInt32("u_uc_id");
-                stf.u_username = _data.GetString("u_username").Substring(1);
-                // stf.u_password = _data.GetString("u_password");
+                m = new UserMember();
+                m.m_id = _data.GetInt32("m_id");
+                m.m_u_id = _data.GetInt32("m_u_id");
+                m.up_filename = _data.IsDBNull("up_filename") ? null : _data.GetString("up_filename");
+                m.up_photo = _data.IsDBNull("up_photo") ? null : (byte[])_data.GetValue("up_photo");
+                m.m_class = _data.GetString("m_class");
+                m.m_fullname = _data.GetString("m_fullname");
+                m.m_email = _data.GetString("m_email");
+                m.m_contact = _data.GetString("m_contact");
+                m.m_address = _data.GetString("m_address");
+                m.m_status = _data.GetInt16("m_status");
+                m.u_id = _data.GetInt32("u_id");
+                m.u_uc_id = _data.GetInt32("u_uc_id");
+                m.u_username = _data.GetString("u_username").Substring(1);
             }
             _conn.Close();
-            return stf;
+            return m;
         }
 
-        public static int Create(string connStr, UserStaff s)
+        public static int Create(string connStr, UserMember m)
         {
-            int affectedRow = 0;
-            using var _conn = new MySqlConnection(connStr);
+            int affectedRow = 0;using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
             string sqlStr =
-                "INSERT INTO `db_perpus`.`staff` "+
-                "(`stf_id`,`stf_u_id`,"+
-                "`stf_sc_id`,`stf_fullname`,`stf_email`,`stf_contact`,`stf_address`,`stf_shift`,`stf_status`,"+
-                "`stf_rec_status`,`stf_rec_createdby`,`stf_rec_created`) "+
-                "VALUES ('"+s.stf_id+"','"+s.stf_u_id+"','"+s.stf_sc_id+"','"+
-                s.stf_fullname+"','"+s.stf_email+"','"+s.stf_contact+"','"+s.stf_address+"','"+s.stf_shift+"','"+
-                s.stf_status+"','"+s.stf_rec_status+"','"+s.stf_rec_createdby+"','"+s.stf_rec_created+"');";
+                "INSERT INTO `db_perpus`.`member` "+
+                "(`m_id`,`m_u_id`,"+
+                "`m_class`,`m_fullname`,`m_email`,`m_contact`,`m_address`,`m_status`,"+
+                "`m_rec_status`,`m_rec_createdby`,`m_rec_created`) "+
+                "VALUES ('"+m.m_id+"','"+m.m_u_id+"','"+
+                m.m_class+m.m_fullname+"','"+m.m_email+"','"+m.m_contact+"','"+m.m_address+"','"+
+                m.m_status+"','"+m.m_rec_status+"','"+m.m_rec_createdby+"','"+m.m_rec_created+"');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             affectedRow = _cmd.ExecuteNonQuery();
@@ -112,18 +107,18 @@ namespace PerpusApp.Source.CRUD
             return affectedRow;
         }
 
-        public static int CreateAlive(MySqlConnection _conn, UserStaff s)
+        public static int CreateAlive(MySqlConnection _conn, UserMember m)
         {
             int affectedRow = 0;
 
             string sqlStr =
-                "INSERT INTO `db_perpus`.`staff` "+
-                "(`stf_id`,`stf_u_id`,`stf_sc_id`,"+
-                "`stf_fullname`,`stf_email`,`stf_contact`,`stf_address`,`stf_shift`,`stf_status`,"+
-                "`stf_rec_status`,`stf_rec_createdby`,`stf_rec_created`) "+
-                "VALUES ('"+s.stf_id+"','"+s.stf_u_id+"','"+s.stf_sc_id+"','"+
-                s.stf_fullname+"','"+s.stf_email+"','"+s.stf_contact+"','"+s.stf_address+"','"+s.stf_shift+"','"+
-                s.stf_status+"','"+s.stf_rec_status+"','"+s.stf_rec_createdby+"','"+s.stf_rec_created+"');";
+                "INSERT INTO `db_perpus`.`member` "+
+                "(`m_id`,`m_u_id`,"+
+                "`m_class`,`m_fullname`,`m_email`,`m_contact`,`m_address`,`m_status`,"+
+                "`m_rec_status`,`m_rec_createdby`,`m_rec_created`) "+
+                "VALUES ('"+m.m_id+"','"+m.m_u_id+"','"+
+                m.m_class+m.m_fullname+"','"+m.m_email+"','"+m.m_contact+"','"+m.m_address+"','"+
+                m.m_status+"','"+m.m_rec_status+"','"+m.m_rec_createdby+"','"+m.m_rec_created+"');";
 
             using var _cmd = new MySqlCommand(sqlStr);
             _cmd.Connection = _conn;
@@ -134,7 +129,7 @@ namespace PerpusApp.Source.CRUD
             return affectedRow;
         }
 
-        public static bool CreateStaffAndUser(string connStr, UserStaff s, Users u, UserPhoto up = null)
+        public static bool CreateMemberAndUser(string connStr, UserMember m, Users u, UserPhoto up = null)
         {
             bool result = false;
             MySqlConnection _conn = null;
@@ -159,9 +154,9 @@ namespace PerpusApp.Source.CRUD
                     up.up_u_id = u.u_id;
                     affectedRow += UserCRUD.CreatePhotoAlive(_conn, up);
                 }
-                s.stf_id = rand.Next(int.MinValue, int.MaxValue);
-                s.stf_u_id = u.u_id;
-                affectedRow += CreateAlive(_conn, s);
+                m.m_id = rand.Next(int.MinValue, int.MaxValue);
+                m.m_u_id = u.u_id;
+                affectedRow += CreateAlive(_conn, m);
 
                 if(affectedRow != 3-(up == null ? 1 : 0)) throw new Exception();
 
@@ -191,24 +186,23 @@ namespace PerpusApp.Source.CRUD
             return result;
         }
 
-        public static int Update(string connStr, int stf_u_id, UserStaff s)
+        public static int Update(string connStr, int m_u_id, UserMember m)
         {
             int affectedRow = 0;
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
-            string sqlStr =
-                "UPDATE `db_perpus`.`staff` SET "+
-                "`stf_sc_id` = '"+s.stf_sc_id+
-                "', `stf_fullname` = '"+s.stf_fullname+
-                "', `stf_email` = '"+s.stf_email+
-                "', `stf_contact` = '"+s.stf_contact+
-                "', `stf_address` = '"+s.stf_address+
-                "', `stf_shift` = '"+s.stf_shift+
-                "', `stf_status` = '"+s.stf_status+
-                "', `stf_rec_updatedby` = '"+s.stf_rec_updatedby+
-                "', `stf_rec_updated` = '"+s.stf_rec_updated+
-                "' WHERE (`stf_u_id` = '"+stf_u_id+"');";
+            string sqlStr = 
+                "UPDATE `db_perpus`.`member` SET "+
+                "`m_class` = '"+m.m_class+
+                "', `m_fullname` = '"+m.m_fullname+
+                "', `m_email` = '"+m.m_email+
+                "', `m_contact` = '"+m.m_contact+
+                "', `m_address` = '"+m.m_address+
+                "', `m_status` = '"+m.m_status+
+                "', `m_rec_updatedby` = '"+m.m_rec_updatedby+
+                "', `m_rec_updated` = '"+m.m_rec_updated+
+                "' WHERE (`m_u_id` = '"+m_u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             affectedRow = _cmd.ExecuteNonQuery();
@@ -217,22 +211,21 @@ namespace PerpusApp.Source.CRUD
             return affectedRow;
         }
 
-        public static int UpdateAlive(MySqlConnection _conn, int stf_u_id, UserStaff s)
+        public static int UpdateAlive(MySqlConnection _conn, int m_u_id, UserMember m)
         {
             int affectedRow = 0;
 
-            string sqlStr =
-                "UPDATE `db_perpus`.`staff` SET "+
-                "`stf_sc_id` = '"+s.stf_sc_id+
-                "', `stf_fullname` = '"+s.stf_fullname+
-                "', `stf_email` = '"+s.stf_email+
-                "', `stf_contact` = '"+s.stf_contact+
-                "', `stf_address` = '"+s.stf_address+
-                "', `stf_shift` = '"+s.stf_shift+
-                "', `stf_status` = '"+s.stf_status+
-                "', `stf_rec_updatedby` = '"+s.stf_rec_updatedby+
-                "', `stf_rec_updated` = '"+s.stf_rec_updated+
-                "' WHERE (`stf_u_id` = '"+stf_u_id+"');";
+            string sqlStr = 
+                "UPDATE `db_perpus`.`member` SET "+
+                "`m_class` = '"+m.m_class+
+                "', `m_fullname` = '"+m.m_fullname+
+                "', `m_email` = '"+m.m_email+
+                "', `m_contact` = '"+m.m_contact+
+                "', `m_address` = '"+m.m_address+
+                "', `m_status` = '"+m.m_status+
+                "', `m_rec_updatedby` = '"+m.m_rec_updatedby+
+                "', `m_rec_updated` = '"+m.m_rec_updated+
+                "' WHERE (`m_u_id` = '"+m_u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr);
             _cmd.Connection = _conn;
@@ -243,7 +236,7 @@ namespace PerpusApp.Source.CRUD
             return affectedRow;
         }
 
-        public static bool UpdateStaffAndUser(string connStr, UserStaff s, Users u, UserPhoto up = null)
+        public static bool UpdateMemberAndUser(string connStr, UserMember m, Users u, UserPhoto up = null)
         {
             bool result = false;
             MySqlConnection _conn = null;
@@ -260,7 +253,7 @@ namespace PerpusApp.Source.CRUD
                 int affectedRow = 0;
                 if(up != null) affectedRow += UserCRUD.UpdatePhotoAlive(_conn, (int)u.u_id, up);
                 affectedRow += UserCRUD.UpdateAlive(_conn, (int)u.u_id, u);
-                affectedRow += UpdateAlive(_conn, (int)s.stf_u_id, s);
+                affectedRow += UpdateAlive(_conn, (int)m.m_u_id, m);
 
                 if(affectedRow != 3-(up == null ? 1 : 0)) throw new Exception();
 
@@ -290,13 +283,13 @@ namespace PerpusApp.Source.CRUD
             return result;
         }
 
-        public static int DeletePermanent(string connStr, int stf_u_id)
+        public static int Delete(string connStr, int m_u_id)
         {
             int affectedRow = 0;
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
-            string sqlStr = "DELETE FROM `db_perpus`.`staff` WHERE (`stf_u_id` = '"+stf_u_id+"');";
+            string sqlStr = "DELETE FROM `db_perpus`.`member` WHERE (`m_u_id` = '"+m_u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             affectedRow = _cmd.ExecuteNonQuery();
@@ -305,11 +298,11 @@ namespace PerpusApp.Source.CRUD
             return affectedRow;
         }
 
-        public static int DeletePermanentAlive(MySqlConnection _conn, int stf_u_id)
+        public static int DeleteAlive(MySqlConnection _conn, int m_u_id)
         {
             int affectedRow = 0;
 
-            string sqlStr = "DELETE FROM `db_perpus`.`staff` WHERE (`stf_u_id` = '"+stf_u_id+"');";
+            string sqlStr = "DELETE FROM `db_perpus`.`member` WHERE (`m_u_id` = '"+m_u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr);
             _cmd.Connection = _conn;
@@ -320,7 +313,7 @@ namespace PerpusApp.Source.CRUD
             return affectedRow;
         }
 
-        public static bool DeleteStaffAndUser(string connStr, int stf_u_id)
+        public static bool DeleteMemberAndUser(string connStr, int m_u_id)
         {
             bool result = false;
             MySqlConnection _conn = null;
@@ -335,8 +328,8 @@ namespace PerpusApp.Source.CRUD
                 _cmd.Transaction = sqlTrans;
 
                 int affectedRow = 0;
-                affectedRow += DeletePermanentAlive(_conn, stf_u_id);
-                affectedRow += UserCRUD.DeleteAlive(_conn, stf_u_id);
+                affectedRow += DeleteAlive(_conn, m_u_id);
+                affectedRow += UserCRUD.DeleteAlive(_conn, m_u_id);
 
                 if(affectedRow != 2) throw new Exception();
 

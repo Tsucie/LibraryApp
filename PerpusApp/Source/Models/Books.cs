@@ -6,6 +6,7 @@ namespace PerpusApp.Source.Models
     {
         public int bks_id { get; set; }
         public int bks_bc_id { get; set; }
+        public int? bks_m_id { get; set; }
         public string bks_code { get; set; }
         public string bks_name { get; set; }
         public string bks_writer { get; set; }

@@ -13,7 +13,9 @@ namespace PerpusApp.Source.CRUD
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
-            string sqlStr = "SELECT u_id, u_uc_id, u_username, u_password FROM db_perpus.users WHERE (`u_rec_status` = '1' AND `u_username` = '@"+u_username+"');";
+            string sqlStr =
+                "SELECT u_id, u_uc_id, u_username, u_password FROM db_perpus.users "+
+                "WHERE (`u_rec_status` = '1' AND `u_username` = '@"+u_username+"');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             using MySqlDataReader _data = _cmd.ExecuteReader();
@@ -35,7 +37,8 @@ namespace PerpusApp.Source.CRUD
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
-            string sqlStr = "SELECT u_username FROM db_perpus.users WHERE(u_username = '@"+u_username+"');";
+            string sqlStr =
+                "SELECT u_username FROM db_perpus.users WHERE(u_username = '@"+u_username+"');";
             
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             using MySqlDataReader _data = _cmd.ExecuteReader();
@@ -52,9 +55,13 @@ namespace PerpusApp.Source.CRUD
             using var _conn = new MySqlConnection(connStr);
             _conn.Open();
 
-            string sqlStr = "INSERT INTO `db_perpus`.`users`"+
-            " (`u_id`, `u_uc_id`, `u_username`, `u_password`, `u_rec_status`, `u_rec_createdby`, `u_rec_created`)"+
-            " VALUES ('"+u.u_id+"', '"+u.u_uc_id+"', '@"+u.u_username+"', '"+u.u_password+"', '"+u.u_rec_status+"', '"+u.u_rec_createdby+"', '"+u.u_rec_created+"');";
+            string sqlStr =
+                "INSERT INTO `db_perpus`.`users`"+
+                " (`u_id`, `u_uc_id`, `u_username`, `u_password`, "+
+                "`u_rec_status`, `u_rec_createdby`, `u_rec_created`)"+
+                " VALUES ('"+
+                u.u_id+"', '"+u.u_uc_id+"', '@"+u.u_username+"', '"+u.u_password+"', '"+
+                u.u_rec_status+"', '"+u.u_rec_createdby+"', '"+u.u_rec_created+"');";
             
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             affectedRow = _cmd.ExecuteNonQuery();
@@ -66,9 +73,13 @@ namespace PerpusApp.Source.CRUD
         public static int CreateAlive(MySqlConnection _conn, Users u)
         {
             int affectedRow = 0;
-            string sqlStr = "INSERT INTO `db_perpus`.`users`"+
-            " (`u_id`, `u_uc_id`, `u_username`, `u_password`, `u_rec_status`, `u_rec_createdby`, `u_rec_created`)"+
-            " VALUES ('"+u.u_id+"', '"+u.u_uc_id+"', '@"+u.u_username+"', '"+u.u_password+"', '"+u.u_rec_status+"', '"+u.u_rec_createdby+"', '"+u.u_rec_created+"');";
+            string sqlStr =
+                "INSERT INTO `db_perpus`.`users`"+
+                " (`u_id`, `u_uc_id`, `u_username`, `u_password`, `u_rec_status`, "+
+                "`u_rec_createdby`, `u_rec_created`)"+
+                " VALUES ('"+
+                u.u_id+"', '"+u.u_uc_id+"', '@"+u.u_username+"', '"+u.u_password+"', '"+
+                u.u_rec_status+"', '"+u.u_rec_createdby+"', '"+u.u_rec_created+"');";
 
             using var _cmd = new MySqlCommand(sqlStr);
             _cmd.Connection = _conn;
@@ -99,8 +110,11 @@ namespace PerpusApp.Source.CRUD
         public static int CreatePhotoAlive(MySqlConnection _conn, UserPhoto up)
         {
             int affectedRow = 0;
-            string sqlStr = "INSERT INTO `db_perpus`.`user_photo` (`up_id`,`up_u_id`,`up_photo`,`up_filename`,`up_rec_status`) "+
-            "VALUES ('"+up.up_id+"','"+up.up_u_id+"','"+up.up_photo+"','"+up.up_filename+"','"+up.up_rec_status+"');";
+            string sqlStr =
+                "INSERT INTO `db_perpus`.`user_photo` "+
+                "(`up_id`,`up_u_id`,`up_photo`,`up_filename`,`up_rec_status`) "+
+                "VALUES ('"+
+                up.up_id+"','"+up.up_u_id+"','"+up.up_photo+"','"+up.up_filename+"','"+up.up_rec_status+"');";
 
             using var _cmd = new MySqlCommand(sqlStr);
             _cmd.Connection = _conn;
@@ -115,7 +129,10 @@ namespace PerpusApp.Source.CRUD
         public static int UpdatePhotoAlive(MySqlConnection _conn, int u_id, UserPhoto up)
         {
             int affectedRow = 0;
-            string sqlStr = "UPDATE `db_perpus`.`user_photo` SET `up_photo` = '"+up.up_photo+"', `up_filename` = '"+up.up_filename+"' WHERE up_u_id = '"+u_id+"'";
+            string sqlStr =
+                "UPDATE `db_perpus`.`user_photo` SET "+
+                "`up_photo` = '"+up.up_photo+"', `up_filename` = '"+up.up_filename+"' "+
+                "WHERE up_u_id = '"+u_id+"'";
 
             using var _cmd = new MySqlCommand();
             _cmd.Connection = _conn;
@@ -194,7 +211,11 @@ namespace PerpusApp.Source.CRUD
             string sqlPass = "";
             if(u.u_password != null) sqlPass = ", `u_password` = '"+u.u_password+"'";
             
-            string sqlStr = "UPDATE `db_perpus`.`users` SET `u_username` = '@"+u.u_username+"'"+sqlPass+", `u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' WHERE (`u_id` = '"+u_id+"');";
+            string sqlStr =
+                "UPDATE `db_perpus`.`users` SET "+
+                "`u_username` = '@"+u.u_username+"'"+sqlPass+", "+
+                "`u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' "+
+                "WHERE (`u_id` = '"+u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr, _conn);
             affectedRow = _cmd.ExecuteNonQuery();
@@ -211,8 +232,10 @@ namespace PerpusApp.Source.CRUD
             if(u.u_password != null) sqlPass = ", `u_password` = '"+u.u_password+"'";
             
             string sqlStr =
-                "UPDATE `db_perpus`.`users` "+
-                "SET `u_username` = '@"+u.u_username+"'"+sqlPass+", `u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' WHERE (`u_id` = '"+u_id+"');";
+                "UPDATE `db_perpus`.`users` SET "+
+                "`u_username` = '@"+u.u_username+"'"+sqlPass+", "+
+                "`u_rec_updatedby` = '"+u.u_rec_updatedby+"', `u_rec_updated` = '"+u.u_rec_updated+"' "+
+                "WHERE (`u_id` = '"+u_id+"');";
 
             using var _cmd = new MySqlCommand(sqlStr);
             _cmd.Connection = _conn;
