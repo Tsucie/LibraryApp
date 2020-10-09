@@ -74,7 +74,7 @@ namespace PerpusApp.Source.General
             // check hash
             if(!IsHashSupported(hashedPassword))
             {
-                throw new NotSupportedException("Password Salah!");
+                throw new NotSupportedException("Invalid Password!");
             }
 
             // extract iterations and Base64 string

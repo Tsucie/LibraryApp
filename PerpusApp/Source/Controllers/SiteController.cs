@@ -11,7 +11,7 @@ using PerpusApp.Source.Models;
 
 namespace PerpusApp.Source.Controller
 {
-    [Route("api/[controller]")]
+    [Route("PerpusApp/[controller]")]
     [ApiController]
     public class SiteController : ControllerBase
     {

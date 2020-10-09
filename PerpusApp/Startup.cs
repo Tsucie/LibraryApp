@@ -21,6 +21,8 @@ namespace PerpusApp
             private set;
         }
 
+        private const string corspolicy_allowanyorigins = "corspolicy_allowanyorigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,6 +34,14 @@ namespace PerpusApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(corspolicy_allowanyorigins, builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +57,8 @@ namespace PerpusApp
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(corspolicy_allowanyorigins);
 
             app.UseEndpoints(endpoints =>
             {

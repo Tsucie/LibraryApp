@@ -38,3 +38,7 @@ D:\Library App\PerpusApp\obj\Debug\netcoreapp3.1\PerpusApp.RazorTargetAssemblyIn
 D:\Library App\PerpusApp\obj\Debug\netcoreapp3.1\PerpusApp.csproj.CopyComplete
 D:\Library App\PerpusApp\obj\Debug\netcoreapp3.1\PerpusApp.dll
 D:\Library App\PerpusApp\obj\Debug\netcoreapp3.1\PerpusApp.pdb
+D:\Library App\PerpusApp\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+D:\Library App\PerpusApp\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+D:\Library App\PerpusApp\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+D:\Library App\PerpusApp\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll

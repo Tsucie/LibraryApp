@@ -34,5 +34,11 @@ namespace PerpusApp.Source.Models
         public int uc_id { get; set; }
         public string uc_name { get; set; }
         public string uc_desc { get; set; }
+
+        // FromBody Custom Input
+        public string u_new_password { get; set; }
+        public string u_new_confirm_password { get; set; }
+        public string email { get; set; }
+        public string contact { get; set; }
     }
 }
