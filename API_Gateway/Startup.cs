@@ -81,7 +81,7 @@ namespace API_Gateway
             {
                 PreAuthorisationMiddleware = async (ctx, next) =>
                 {
-                    string path = ctx.Request.Path.ToString();
+                    string path = ctx.Request.Path;
                     try
                     {
                         if (string.IsNullOrEmpty(path)) throw new Exception("", new Exception(HttpStatusCode.BadRequest.ToString()));
