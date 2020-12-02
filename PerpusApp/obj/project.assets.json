@@ -6088,11 +6088,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Library App\\PerpusApp\\PerpusApp.csproj",
+      "projectUniqueName": "D:\\Library App\\LibraryApp\\PerpusApp\\PerpusApp.csproj",
       "projectName": "PerpusApp",
-      "projectPath": "D:\\Library App\\PerpusApp\\PerpusApp.csproj",
+      "projectPath": "D:\\Library App\\LibraryApp\\PerpusApp\\PerpusApp.csproj",
       "packagesPath": "C:\\Users\\TheGamer\\.nuget\\packages\\",
-      "outputPath": "D:\\Library App\\PerpusApp\\obj\\",
+      "outputPath": "D:\\Library App\\LibraryApp\\PerpusApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\TheGamer\\AppData\\Roaming\\NuGet\\NuGet.Config"

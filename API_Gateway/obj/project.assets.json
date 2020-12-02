@@ -807,11 +807,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Library App\\API_Gateway\\API_Gateway.csproj",
+      "projectUniqueName": "D:\\Library App\\LibraryApp\\API_Gateway\\API_Gateway.csproj",
       "projectName": "API_Gateway",
-      "projectPath": "D:\\Library App\\API_Gateway\\API_Gateway.csproj",
+      "projectPath": "D:\\Library App\\LibraryApp\\API_Gateway\\API_Gateway.csproj",
       "packagesPath": "C:\\Users\\TheGamer\\.nuget\\packages\\",
-      "outputPath": "D:\\Library App\\API_Gateway\\obj\\",
+      "outputPath": "D:\\Library App\\LibraryApp\\API_Gateway\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\TheGamer\\AppData\\Roaming\\NuGet\\NuGet.Config"

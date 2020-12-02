@@ -9,7 +9,7 @@
           "Port": 5000
         }
       ],
-      "UpstreamPathTemplate": "/api/PerpusApp/StaffCategory/Add",
+      "UpstreamPathTemplate": "/api/sc/Add",
       "UpstreamHttpMethod": [ "Post" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "JwtSchemeKey",
@@ -25,7 +25,7 @@
           "Port": 5000
         }
       ],
-      "UpstreamPathTemplate": "/api/PerpusApp/StaffCategory/GetList",
+      "UpstreamPathTemplate": "/api/sc/GetList",
       "UpstreamHttpMethod": [ "Get" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "JwtSchemeKey",
@@ -41,7 +41,7 @@
           "Port": 5000
         }
       ],
-      "UpstreamPathTemplate": "/api/PerpusApp/StaffCategory/GetData/{sc_id}",
+      "UpstreamPathTemplate": "/api/sc/GetData/{sc_id}",
       "UpstreamHttpMethod": [ "Get" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "JwtSchemeKey",
@@ -57,7 +57,7 @@
           "Port": 5000
         }
       ],
-      "UpstreamPathTemplate": "/api/PerpusApp/StaffCategory/Edit",
+      "UpstreamPathTemplate": "/api/sc/Edit",
       "UpstreamHttpMethod": [ "Put" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "JwtSchemeKey",
@@ -73,7 +73,7 @@
           "Port": 5000
         }
       ],
-      "UpstreamPathTemplate": "/api/PerpusApp/StaffCategory/Delete",
+      "UpstreamPathTemplate": "/api/sc/Delete",
       "UpstreamHttpMethod": [ "Delete" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "JwtSchemeKey",
@@ -90,6 +90,18 @@
         }
       ],
       "UpstreamPathTemplate": "/auth/login",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/jwtauthentication/Login/Mobile",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8888
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/mobilelogin",
       "UpstreamHttpMethod": [ "Post" ]
     },
     {

@@ -1,16 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace JWT_Authentication
@@ -46,6 +40,17 @@ namespace JWT_Authentication
             private set;
         }
 
+        public static string jwt_mobile_secret_key
+        {
+            get;
+            private set;
+        }
+        public static string jwt_mobile_issuer
+        {
+            get;
+            private set;
+        }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -63,10 +68,15 @@ namespace JWT_Authentication
                 string redis_instance_name = Configuration.GetSection("AppSettings")["redis:name"];
                 string redis_config = Configuration.GetSection("AppSettings")["redis:config"];
 
+                // Web JWT
                 jwt_secret_key = Configuration.GetSection("AppSettings")["jwtAuth:jwtSecretKey"];
                 jwt_issuer = Configuration.GetSection("AppSettings")["jwtAuth:jwtIssuer"];
                 jwt_expire = Configuration.GetSection("AppSettings")["jwtAuth:jwtExpireMinutes"];
                 jwt_idle_expire = Configuration.GetSection("AppSettings")["jwtAuth:jwtIdleExpireMinutes"];
+
+                // Mobile JWT
+                jwt_mobile_secret_key = Configuration.GetSection("AppSettings")["jwtAuth:jwtMobileSecretKey"];
+                jwt_mobile_issuer = Configuration.GetSection("AppSettings")["jwtAuth:jwtMobileIssuer"];
 
                 services.AddAuthentication(auth =>
                     auth.DefaultScheme = "JwtSchemeKey"
@@ -85,6 +95,20 @@ namespace JWT_Authentication
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero,
                         RequireExpirationTime = true
+                    };
+                })
+                .AddJwtBearer("JwtMobileSchemeKey", options => 
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt_mobile_secret_key)),
+                        ValidateIssuer = true,
+                        ValidIssuer = jwt_mobile_issuer,
+                        ValidateAudience = true,
+                        ValidAudience = jwt_mobile_issuer,
+                        SaveSigninToken = true
                     };
                 });
 
@@ -108,12 +132,9 @@ namespace JWT_Authentication
 
             app.UseSession();
 
-            // app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseAuthentication();
-            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

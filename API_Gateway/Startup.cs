@@ -23,7 +23,6 @@ namespace API_Gateway
 
         public Startup(IHostEnvironment env ,IConfiguration config)
         {
-            // Configuration = configuration;
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(env.ContentRootPath)
                 .AddJsonFile("configuration.json", optional: false, reloadOnChange: true)
@@ -39,9 +38,10 @@ namespace API_Gateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddControllers();
             string key = AppConfiguration.GetSection("AppSettings")["jwtAuth:jwtSecretKey"];
             string issuer = AppConfiguration.GetSection("AppSettings")["jwtAuth:jwtIssuer"];
+            string mobileKey = AppConfiguration.GetSection("AppSettings")["jwtAuth:jwtMobileSecretKey"];
+            string mobileIssuer = AppConfiguration.GetSection("AppSettings")["jwtAuth:jwtMobileIssuer"];
 
             services.AddCors(options =>
             {
@@ -53,7 +53,8 @@ namespace API_Gateway
 
             services.AddAuthentication(auth => {
                 auth.DefaultScheme = "JwtSchemeKey";
-            }).AddJwtBearer("JwtSchemeKey", jwt => {
+            })
+            .AddJwtBearer("JwtSchemeKey", jwt => {
                 jwt.RequireHttpsMetadata = false;
                 jwt.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -66,6 +67,19 @@ namespace API_Gateway
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero,
                     RequireExpirationTime = true
+                };
+            })
+            .AddJwtBearer("JwtMobileSchemeKey", jwt => {
+                jwt.RequireHttpsMetadata = false;
+                jwt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(mobileKey)),
+                    ValidateIssuer = true,
+                    ValidIssuer = mobileIssuer,
+                    ValidateAudience = true,
+                    ValidAudience = mobileIssuer,
+                    SaveSigninToken = true
                 };
             });
 
@@ -86,7 +100,7 @@ namespace API_Gateway
                     {
                         if (string.IsNullOrEmpty(path)) throw new Exception("", new Exception(HttpStatusCode.BadRequest.ToString()));
 
-                        if (path != "/auth/login" && path != "/auth/login/resetpw")
+                        if (path != "/auth/login" && path != "/auth/login/resetpw" && path != "/auth/mobilelogin")
                         {
                             IHeaderDictionary headerDict = ctx.Request.Headers;
                             HttpResponseMessage response = await CheckValidationAsync(headerDict); // Object reference not set to an instance of an object
@@ -139,22 +153,6 @@ namespace API_Gateway
             app.UseOcelot(configuration);
 
             jwtAuth_host = AppConfiguration.GetSection("AppSettings")["ExternalServices:host-jwtAuth"];
-
-            // if (env.IsDevelopment())
-            // {
-            //     app.UseDeveloperExceptionPage();
-            // }
-
-            // app.UseHttpsRedirection();
-
-            // app.UseRouting();
-
-            // app.UseAuthorization();
-
-            // app.UseEndpoints(endpoints =>
-            // {
-            //     endpoints.MapControllers();
-            // });
         }
 
         private async Task<HttpResponseMessage> CheckValidationAsync(IHeaderDictionary headerDict)

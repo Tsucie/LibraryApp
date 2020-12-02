@@ -5806,11 +5806,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Library App\\JWT_Authentication\\JWT_Authentication.csproj",
+      "projectUniqueName": "D:\\Library App\\LibraryApp\\JWT_Authentication\\JWT_Authentication.csproj",
       "projectName": "JWT_Authentication",
-      "projectPath": "D:\\Library App\\JWT_Authentication\\JWT_Authentication.csproj",
+      "projectPath": "D:\\Library App\\LibraryApp\\JWT_Authentication\\JWT_Authentication.csproj",
       "packagesPath": "C:\\Users\\TheGamer\\.nuget\\packages\\",
-      "outputPath": "D:\\Library App\\JWT_Authentication\\obj\\",
+      "outputPath": "D:\\Library App\\LibraryApp\\JWT_Authentication\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\TheGamer\\AppData\\Roaming\\NuGet\\NuGet.Config"

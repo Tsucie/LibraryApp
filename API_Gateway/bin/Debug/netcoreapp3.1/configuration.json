@@ -44,7 +44,10 @@
       "UpstreamPathTemplate": "/api/PerpusApp/StaffCategory/GetData/{sc_id}",
       "UpstreamHttpMethod": [ "Get" ],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "JwtSchemeKey",
+        "AuthenticationProviderKey": [
+          "JwtSchemeKey",
+          "JwtMobileSchemeKey"
+        ],
         "AllowedScopes": []
       }
     },
@@ -93,6 +96,18 @@
       "UpstreamHttpMethod": [ "Post" ]
     },
     {
+      "DownstreamPathTemplate": "/jwtauthentication/Login/Mobile",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8888
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/mobilelogin",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
       "DownstreamPathTemplate": "/jwtauthentication/Logout",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -104,7 +119,10 @@
       "UpstreamPathTemplate": "/auth/logout",
       "UpstreamHttpMethod": [ "Post" ],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "JwtSchemeKey",
+        "AuthenticationProviderKey": [
+          "JwtSchemeKey",
+          "JwtMobileSchemeKey"
+        ],
         "AllowedScopes": []
       }
     },
@@ -120,7 +138,10 @@
       "UpstreamPathTemplate": "/api/PerpusApp/User/ChangePassword",
       "UpstreamHttpMethod": [ "Put" ],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "JwtSchemeKey",
+        "AuthenticationProviderKey": [
+          "JwtSchemeKey",
+          "JwtMobileSchemeKey"
+        ],
         "AllowedScopes": []
       }
     },
